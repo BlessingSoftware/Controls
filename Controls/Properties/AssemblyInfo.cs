@@ -10,14 +10,15 @@ using System.Windows.Markup;
 // 特性集控制。更改这些特性值可修改
 // 与程序集关联的信息。
 [assembly: AssemblyTitle("BlessingSoftware.Controls")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("A collection of some useful controls  for the Windows Presentation Foundation (WPF).")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("BlessingSoftware")]
 [assembly: AssemblyProduct("BlessingSoftware.Controls")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCopyright("Copyright © BlessingSoftware 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
+[assembly:InternalsVisibleTo("Sample")]
 // 将 ComVisible 设置为 false 使此程序集中的类型
 // 对 COM 组件不可见。  如果需要从 COM 访问此程序集中的类型，
 // 则将该类型上的 ComVisible 特性设置为 true。

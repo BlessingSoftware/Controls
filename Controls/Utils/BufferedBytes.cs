@@ -92,18 +92,18 @@ namespace BlessingSoftware.Utils
 			CacheBuffer(0);
 		}
 		
-		public IEnumerable<byte> GetBytesLine(int lineoffset){
+		public IEnumerable<byte> GetBytesLine(int lineoffset,int count = 0x10){
 			if (baseSrteam ==null) {
 				yield break;
 			}
 			int index =lineoffset << 4;
 			
-			index -=this.offset;			
+			index -=this.offset;
 			EnsureBuffer(index);
-			for (int i = 0; i < 16; i++) {
-				yield return buffer[index++];
+			for (int i = 0; i < count; i++) {
 				if (index >= length)
 					yield break;
+				yield return buffer[index++];
 				
 			}
 			yield break;
@@ -135,7 +135,7 @@ namespace BlessingSoftware.Utils
 		}
 		
 		void EnsureBuffer(int index){
-			if ((index + 0x10) > length) {
+			if ((index + 0x40) > length) {
 				int off=index - capacity / 2;
 				if (off<0) 
 					off=0;				
