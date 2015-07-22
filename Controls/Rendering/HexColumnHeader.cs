@@ -13,7 +13,7 @@ using BlessingSoftware.Utils;
 
 namespace BlessingSoftware.Controls.Rendering
 {
-	internal class HexColumnHeader : FrameworkElement, IScrollable
+	public class HexColumnHeader : FrameworkElement, IScrollable
 	{
 		#region DependencyProperty
 				

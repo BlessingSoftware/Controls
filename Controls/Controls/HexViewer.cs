@@ -173,9 +173,7 @@ namespace BlessingSoftware.Controls
                 if (fd != null && File.Exists(fd[0]))
                 {
                     this.BaseStream = File.OpenRead(fd[0]);
-                    //this.InvalidateVisual();
                 }
-                e.Handled = true;
             }
             base.OnDrop(e);
         }

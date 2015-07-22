@@ -99,15 +99,16 @@ namespace BlessingSoftware.Controls
 
 		void OnBaseStreamChanged(Stream stream)
 		{
-			this.m_buffer.ChangeStream(stream);
-			this.ClearScollData();
+            this.hexView.BaseStream = stream;
+			//this.m_buffer.ChangeStream(stream);
+			//this.ClearScollData();
 		}
 
-		void ClearScollData()
-		{
-			(this.hexView as IScrollInfo).ScrollOwner.InvalidateScrollInfo();
-			this.InvalidateArrange();
-		}
+		//void ClearScollData()
+		//{
+  //          //(this.hexView as IScrollInfo).ScrollOwner.InvalidateScrollInfo();
+  //          this.hexView.ClearScrollData();
+		//}
 
 		//public static readonly DependencyProperty ShowColumnProperty =
 		//    DependencyProperty.Register("ShowColumn", typeof(bool), typeof(HexArea),
@@ -265,106 +266,7 @@ namespace BlessingSoftware.Controls
 		{
 			return new Typeface(this.FontFamily, this.FontStyle, this.FontWeight, this.FontStretch);
 		}
-
-		//protected override Size MeasureOverride(Size availableSize)
-		//{
-		//    availableSize = base.MeasureOverride(availableSize);
-		//    //double w = this.DefaultLineWidth;
-		//    //if (this.ShowAddress)
-		//    //    w += AddressWidth;
-		//    //Size sz = new Size(
-		//    //    Math.Max(availableSize.Width, w),
-		//    //    defaultLineHeight * 129.0d
-		//    //);
-		//    //SetScrollData(availableSize, sz, scrollOffset);
-		//    if (availableSize.Width == double.PositiveInfinity)
-		//        availableSize.Width = SystemParameters.PrimaryScreenWidth;
-		//    if (availableSize.Height == double.PositiveInfinity)
-		//        availableSize.Height = SystemParameters.PrimaryScreenHeight;
-		//    return availableSize;
-		//}
-
-
-		//protected override void OnRender(DrawingContext drawingContext)
-		//{
-		//    base.OnRender(drawingContext);
-
-		//    Point pos = new Point(
-		//        -scrollOffset.X,
-		//        -scrollOffset.Y
-		//    );
-
-		//    Typeface tf = this.GetTypeface();
-
-		//    if (!ShowColumn)
-		//    {
-		//        pos.Y -= DefaultLineHeight;
-		//    }
-
-		//    if (ShowAddress)
-		//    {
-		//        pos.X += this.AddressWidth;
-		//    }
-
-		//    DrawHex(pos, tf, drawingContext);
-
-		//    pos.Y = -scrollOffset.Y - defaultLineHeight;
-
-		//    if (ShowColumn)
-		//    {
-		//        drawingContext.DrawRectangle(
-		//            ColumnBackground,
-		//            null,
-		//            new Rect(0d, 0d, scrollViewport.Width, defaultLineHeight)
-		//        );
-
-		//        drawingContext.DrawText(
-		//            new FormattedText(
-		//            C_COLUMNHEADER,
-		//            s_hexCulture,
-		//            base.FlowDirection,
-		//            tf,
-		//            this.FontSize,
-		//            this.Foreground
-		//        ), new Point(pos.X, 0d));
-		//        pos.Y += defaultLineHeight;
-		//    }
-
-		//    if (ShowAddress)
-		//    {
-		//        drawingContext.DrawRectangle(
-		//            ColumnBackground,
-		//            null,
-		//            new Rect(0d, 0d, AddressWidth, scrollViewport.Height)
-		//        );
-		//        pos = new Point(0, -scrollOffset.Y);
-
-		//        for (int i = 0; i < 0x80; i++)
-		//        {
-		//            pos.Y += defaultLineHeight;
-		//            if (pos.Y < 0.1d)
-		//            {
-		//                continue;
-		//            }
-		//            else if (pos.Y > this.Height)
-		//            {
-		//                break;
-		//            }
-
-		//            drawingContext.DrawText(
-		//                new FormattedText(
-		//                    (i << 4).ToString("X8"),
-		//                    s_hexCulture,
-		//                    base.FlowDirection,
-		//                    tf,
-		//                    this.FontSize,
-		//                    this.Foreground
-		//                ),
-		//                pos);
-		//        }
-		//    }
-		//}
-
+        
 		protected override Size ArrangeOverride(Size arrangeBounds)
 		{
 			arrangeBounds = base.ArrangeOverride(arrangeBounds);
@@ -637,46 +539,7 @@ namespace BlessingSoftware.Controls
 				return Rect.Empty;
 		}
 		#endregion
-
-
-		#region InvalidateMeasure(DispatcherPriority)
-		DispatcherOperation invalidateMeasureOperation;
-
-		void InvalidateMeasure(DispatcherPriority priority)
-		{
-			if (priority >= DispatcherPriority.Render)
-			{
-				if (invalidateMeasureOperation != null)
-				{
-					invalidateMeasureOperation.Abort();
-					invalidateMeasureOperation = null;
-				}
-				base.InvalidateMeasure();
-			}
-			else
-			{
-				if (invalidateMeasureOperation != null)
-				{
-					invalidateMeasureOperation.Priority = priority;
-				}
-				else
-				{
-					invalidateMeasureOperation = Dispatcher.BeginInvoke(
-						priority,
-						new Action(
-							delegate
-							{
-								invalidateMeasureOperation = null;
-								base.InvalidateMeasure();
-							}
-						)
-					);
-				}
-			}
-		}
-		#endregion
-
-
+        
 	}
 
 }

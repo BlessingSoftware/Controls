@@ -12,7 +12,7 @@ using System.Windows.Media;
 
 namespace BlessingSoftware.Controls.Rendering
 {
-	internal class HexAddressBar : FrameworkElement, IScrollable
+	public class HexAddressBar : FrameworkElement, IScrollable
 	{
 		#region DependencyProperty
 		public static readonly DependencyProperty AddressWidthProperty =
