@@ -16,7 +16,7 @@ namespace BlessingSoftware.Controls.Rendering
 	public class HexColumnHeader : FrameworkElement, IScrollable
 	{
 		#region DependencyProperty
-				
+		
 		public static readonly DependencyProperty ColumnCountProperty =
 			HexArea.ColumnCountProperty.AddOwner(typeof(HexColumnHeader));
 		
@@ -28,7 +28,7 @@ namespace BlessingSoftware.Controls.Rendering
 		{
 			get { return (int)GetValue(ColumnCountProperty); }
 			set { SetValue(ColumnCountProperty, value); }
-		}		
+		}
 		
 		public static readonly DependencyProperty FontFamilyProperty;
 
@@ -131,7 +131,9 @@ namespace BlessingSoftware.Controls.Rendering
 		}
 
 		#endregion
-
+		
+		private VisualCollection _children;
+		
 		static HexColumnHeader()
 		{
 			HexColumnHeader.FontFamilyProperty = TextElement.FontFamilyProperty.AddOwner(typeof(HexColumnHeader));
@@ -146,6 +148,25 @@ namespace BlessingSoftware.Controls.Rendering
 
 		}
 
+		public HexColumnHeader()
+		{
+			offset = 0;
+			
+			_children = new VisualCollection(this);
+			_child = new DrawingVisual();
+			
+			_children.Add(_child);
+			
+//			var drawingContext = _child.RenderOpen();
+//			{
+//				FormattedText ft =GetFormattedHeader();
+//				drawingContext.DrawText(ft, new Point());
+//				drawingContext.Close();
+//			}
+		}
+		
+		private DrawingVisual _child;
+		
 		public Orientation Orientation
 		{
 			get
@@ -157,11 +178,7 @@ namespace BlessingSoftware.Controls.Rendering
 		int offset;
 		public int Offset
 		{
-			get
-			{
-				return offset;
-			}
-
+			get{return offset;}
 			set
 			{
 				if (value < 0)
@@ -169,43 +186,48 @@ namespace BlessingSoftware.Controls.Rendering
 				if (offset != value)
 				{
 					offset = value;
-					InvalidateVisual();
+					InvalidateMeasure();
 				}
 			}
 		}
 
+		#region Override Methods
+		
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			//System.Diagnostics.Debug.WriteLine(availableSize);
+//			base.MeasureOverride(availableSize);
 			FormattedText ft =GetFormattedHeader();
 			return new Size(Math.Max(ft.Width, availableSize.Width), ft.Height);
 		}
-		string GetHeaderString(){
-			byte[] temp=new byte[ColumnCount];
-			for (byte i = 0; i < temp.Length; i++) {
-				temp[i]=i;
+		protected override Size ArrangeOverride(Size finalSize)
+		{
+			finalSize = base.ArrangeOverride(finalSize);
+			FormattedText ft =GetFormattedHeader();
+			//ft.Width *3.0d/this.ColumnCount;
+			double x= -offset * ft.Width * 3.0d / ft.Text.Length;
+			if ((_child.ContentBounds.Width+x )>=0) {
+				System.Diagnostics.Debug.WriteLine(_child.ContentBounds.Width);
+				System.Diagnostics.Debug.WriteLine(this.RenderSize.Width);
+				System.Diagnostics.Debug.WriteLine(x);
 			}
-			return temp.JoinHex(' ',0,ColumnCount);			
+			_child.Offset = new Vector(x,0d);
+			
+			return finalSize;
 		}
 		
-		FormattedText GetFormattedHeader(){
-			return new FormattedText(
-					GetHeaderString(),
-					CultureInfo.GetCultureInfo("en-US"),
-					base.FlowDirection,
-					new Typeface(this.FontFamily, this.FontStyle, this.FontWeight, this.FontStretch),
-					this.FontSize,
-					this.Foreground
-				);
-		}
-//		const string C_COLUMNHEADER = "00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F";
 		protected override void OnRender(DrawingContext drawingContext)
 		{
 			base.OnRender(drawingContext);
 			drawingContext.DrawRectangle(this.Background, null, new Rect(this.RenderSize));
 
-			FormattedText ft =GetFormattedHeader();
-			double t = 0.0d;// offset * ft.Width / 47.0d;
+			var dc = _child.RenderOpen();
+			{
+				FormattedText ft =GetFormattedHeader();
+				dc.DrawText(ft, new Point());
+				dc.Close();
+			}
+			//FormattedText ft =GetFormattedHeader();
+			//double t = 0.0d;// offset * ft.Width / 47.0d;
 			//double t2 = ft.Width - this.RenderSize.Width;
 			//if (t<t2)
 			//{
@@ -213,10 +235,49 @@ namespace BlessingSoftware.Controls.Rendering
 			//    offset = Convert.ToInt32(t / (ft.Width / 47.0d));
 			//}
 
-			drawingContext.DrawText(ft, new Point(-t, 0.0d));
+			//drawingContext.DrawText(ft, new Point(-t, 0.0d));
+//			_child.Offset = new Vector(offset * 10d,0d);
+//			drawingContext.DrawDrawing(_child.Drawing);
+		}
+		
+		// Provide a required override for the VisualChildrenCount property.
+		protected override int VisualChildrenCount
+		{
+			get { return _children.Count; }
 		}
 
+		// Provide a required override for the GetVisualChild method.
+		protected override Visual GetVisualChild(int index)
+		{
+			if (index < 0 || index >= _children.Count)
+			{
+				throw new ArgumentOutOfRangeException();
+			}
 
-
+			return _children[index];
+		}
+		
+		#endregion
+		
+		string GetHeaderString(){
+			byte[] temp=new byte[ColumnCount];
+			for (byte i = 0; i < temp.Length; i++) {
+				temp[i]=i;
+			}
+			return temp.JoinHex(' ',0,ColumnCount);
+		}
+		
+		FormattedText GetFormattedHeader(){
+			return new FormattedText(
+				GetHeaderString(),
+				CultureInfo.GetCultureInfo("en-US"),
+				base.FlowDirection,
+				new Typeface(this.FontFamily, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal),
+				this.FontSize,
+				this.Foreground
+			);
+			//FontStretches.Normal
+		}
+		
 	}
 }

@@ -100,25 +100,7 @@ namespace BlessingSoftware.Controls
 		void OnBaseStreamChanged(Stream stream)
 		{
             this.hexView.BaseStream = stream;
-			//this.m_buffer.ChangeStream(stream);
-			//this.ClearScollData();
 		}
-
-		//void ClearScollData()
-		//{
-  //          //(this.hexView as IScrollInfo).ScrollOwner.InvalidateScrollInfo();
-  //          this.hexView.ClearScrollData();
-		//}
-
-		//public static readonly DependencyProperty ShowColumnProperty =
-		//    DependencyProperty.Register("ShowColumn", typeof(bool), typeof(HexArea),
-		//                                new FrameworkPropertyMetadata(true));
-		//[Category("Layout")]
-		//public bool ShowColumn
-		//{
-		//    get { return (bool)GetValue(ShowColumnProperty); }
-		//    set { SetValue(ShowColumnProperty, value); }
-		//}
 
 		public static readonly DependencyProperty ShowAddressProperty =
 			DependencyProperty.Register("ShowAddress", typeof(bool), typeof(HexArea),
@@ -466,7 +448,7 @@ namespace BlessingSoftware.Controls
 		void IScrollInfo.LineLeft()
 		{
 			if (hexView != null)
-				(hexView as IScrollInfo).SetHorizontalOffset(hexView.HorizontalOffset - _charWidth);
+				(hexView as IScrollInfo).LineLeft();
 
 			if (colHeader != null)
 				colHeader.Offset = colHeader.Offset - 1;
@@ -475,7 +457,7 @@ namespace BlessingSoftware.Controls
 		void IScrollInfo.LineRight()
 		{
 			if (hexView != null)
-				(hexView as IScrollInfo).SetHorizontalOffset(hexView.HorizontalOffset + _charWidth);
+				(hexView as IScrollInfo).LineRight();
 			if (colHeader != null)
 				colHeader.Offset = colHeader.Offset + 1;
 		}

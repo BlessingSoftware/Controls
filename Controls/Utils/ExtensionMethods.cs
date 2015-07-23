@@ -293,9 +293,7 @@ namespace BlessingSoftware.Utils
 			}
 			return result;
 		}
-		
-		
-		
+				
 		public static IEnumerable<DependencyObject> VisualAncestorsAndSelf(this DependencyObject obj)
 		{
 			while (obj != null) {

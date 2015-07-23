@@ -195,7 +195,7 @@ namespace BlessingSoftware.Controls.Rendering
 
 			int off = this.offset;
 
-			Typeface tf = new Typeface(this.FontFamily, this.FontStyle, this.FontWeight, this.FontStretch);
+			Typeface tf = new Typeface(this.FontFamily, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
 			CultureInfo info = CultureInfo.GetCultureInfo("en-US");
 			FormattedText temp;
 			double height = this.RenderSize.Height;

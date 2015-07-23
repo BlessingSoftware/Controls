@@ -89,26 +89,6 @@ namespace BlessingSoftware.Controls
         }
 
         #endregion
-        //public static readonly DependencyProperty ShowColumnProperty = Controls.HexArea.ShowColumnProperty.AddOwner(typeof(HexViewer),
-        //    new PropertyMetadata(true, OnShowColumnPropertyChanged));
-
-        //[Category("Layout")]
-        //public bool ShowColumn
-        //{
-        //    get { return (bool)GetValue(ShowColumnProperty); }
-        //    set { SetValue(ShowColumnProperty, value); }
-        //}
-
-        //static void OnShowColumnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        //{
-        //    (d as HexViewer).OnShowColumnPropertyChanged((bool)e.NewValue);
-        //}
-
-        //void OnShowColumnPropertyChanged(bool newValue)
-        //{
-        //    if (this.HexArea != null)
-        //        this.ShowColumn = newValue;
-        //}
 
         #region DependencyProperties
         //public static readonly DependencyProperty BaseStreamProperty =
