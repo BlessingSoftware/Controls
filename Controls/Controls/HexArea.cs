@@ -58,20 +58,20 @@ namespace BlessingSoftware.Controls
 			}
 		}
 
-		double _lineHeight, _charWidth;
-		int _linesInpage;
+//		double _lineHeight, _charWidth;
+//		int _linesInpage;
 
-		public double LineHeight { get { return _lineHeight; } }
+//		public double LineHeight { get { return _lineHeight; } }
 
-		public double CharWidth { get { return _charWidth; } }
+//		public double CharWidth { get { return _charWidth; } }
 
-		public int LinesInpage
-		{
-			get
-			{
-				return _linesInpage;
-			}
-		}
+//		public int LinesInpage
+//		{
+//			get
+//			{
+//				return _linesInpage;
+//			}
+//		}
 
 		static HexArea()
 		{
@@ -81,6 +81,42 @@ namespace BlessingSoftware.Controls
 		}
 
 		#region DependencyProperties
+
+		public static readonly DependencyProperty LineHeightProperty =
+			DependencyProperty.Register("LineHeight", typeof(double), typeof(HexArea),
+			                            new FrameworkPropertyMetadata(12.0d));
+		
+		public static readonly DependencyProperty ColumnWidthProperty =
+			DependencyProperty.Register("ColumnWidth", typeof(double), typeof(HexArea),
+			                            new FrameworkPropertyMetadata(24.0d));
+		
+		public static readonly DependencyProperty ColumnHeightProperty =
+			DependencyProperty.Register("ColumnHeight", typeof(double), typeof(HexArea),
+			                            new FrameworkPropertyMetadata(24.0d));
+		
+		/// <summary>
+		/// 行高
+		/// </summary>
+		public double LineHeight{
+			get{ return (double)GetValue(LineHeightProperty);}
+			set{ SetValue(LineHeightProperty,value);}
+		}
+		
+		/// <summary>
+		/// 列宽
+		/// </summary>
+		public double ColumnWidth{
+			get{ return (double)GetValue(ColumnWidthProperty);}
+			set{ SetValue(ColumnWidthProperty,value);}
+		}
+		
+		/// <summary>
+		/// 获取或设置标题栏高度
+		/// </summary>
+		public double ColumnHeight{
+			get{ return (double)GetValue(ColumnHeightProperty);}
+			set{ SetValue(ColumnHeightProperty,value);}
+		}
 
 		public static readonly DependencyProperty BaseStreamProperty =
 			DependencyProperty.Register("BaseStream", typeof(Stream), typeof(HexArea),
@@ -99,7 +135,7 @@ namespace BlessingSoftware.Controls
 
 		void OnBaseStreamChanged(Stream stream)
 		{
-            this.hexView.BaseStream = stream;
+			this.hexView.BaseStream = stream;
 		}
 
 		public static readonly DependencyProperty ShowAddressProperty =
@@ -248,7 +284,7 @@ namespace BlessingSoftware.Controls
 		{
 			return new Typeface(this.FontFamily, this.FontStyle, this.FontWeight, this.FontStretch);
 		}
-        
+		
 		protected override Size ArrangeOverride(Size arrangeBounds)
 		{
 			arrangeBounds = base.ArrangeOverride(arrangeBounds);
@@ -273,11 +309,11 @@ namespace BlessingSoftware.Controls
 		{
 			if ((e.Property == HexArea.FontFamilyProperty)
 			    || (e.Property == HexArea.FontSizeProperty)
-			    || (e.Property == HexArea.FontStretchProperty)
-			    || (e.Property == HexArea.FontStyleProperty)
-			    || (e.Property == HexArea.FontWeightProperty)
 			   )
 			{
+//			    || (e.Property == HexArea.FontStretchProperty)
+//			    || (e.Property == HexArea.FontStyleProperty)
+//			    || (e.Property == HexArea.FontWeightProperty)
 				MeasureFont();
 			}
 
@@ -286,7 +322,13 @@ namespace BlessingSoftware.Controls
 
 		void MeasureFont()
 		{
-			Typeface tf = this.GetTypeface();
+			Typeface tf = new Typeface(
+				this.FontFamily,
+				FontStyles.Normal,
+				FontWeights.Normal,
+				FontStretches.Normal
+			);// this.GetTypeface();
+			
 			FormattedText fText = new FormattedText(new string('8', 10),
 			                                        CultureInfo.CurrentCulture,
 			                                        FlowDirection.LeftToRight,
@@ -294,17 +336,18 @@ namespace BlessingSoftware.Controls
 			                                        FontSize, Foreground
 			                                       );
 
-			_charWidth = fText.Width / 10;
-			_lineHeight = fText.Height;
+//			_charWidth = fText.Width / 10;
+			this.ColumnWidth = fText.Width *3.0d / 10.0d;
+			this.LineHeight = fText.Height;
 
-			if (hexView != null)
-			{
-				_linesInpage = (int)Math.Round(hexView.RenderSize.Height / _lineHeight, 0);
-			}
-			else
-			{
-				_linesInpage = 0;
-			}
+//			if (hexView != null)
+//			{
+//				_linesInpage = (int)Math.Round(hexView.RenderSize.Height / _lineHeight, 0);
+//			}
+//			else
+//			{
+//				_linesInpage = 0;
+//			}
 		}
 
 		#endregion
@@ -368,10 +411,8 @@ namespace BlessingSoftware.Controls
 				if (hexView == null)
 					return 0.0d;
 				double r = hexView.ExtentHeight;
-				if (colHeader != null)
-				{
-					r += colHeader.RenderSize.Height;
-				}
+					r += this.ColumnHeight;
+				
 				return r;
 			}
 		}
@@ -399,11 +440,9 @@ namespace BlessingSoftware.Controls
 
 				if (hexView == null)
 					return 0.0d;
-				double r = hexView.ViewportHeight;
-				if (colHeader != null)
-				{
-					r += colHeader.RenderSize.Height;
-				}
+				double r = hexView.ViewportHeight;				
+					r += this.ColumnHeight;
+				
 				return r;
 			}
 		}
@@ -521,7 +560,7 @@ namespace BlessingSoftware.Controls
 				return Rect.Empty;
 		}
 		#endregion
-        
+		
 	}
 
 }

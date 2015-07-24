@@ -15,6 +15,7 @@ namespace BlessingSoftware.Controls.Rendering
 	public class HexAddressBar : FrameworkElement, IScrollable
 	{
 		#region DependencyProperty
+		
 		public static readonly DependencyProperty AddressWidthProperty =
 			HexArea.AddressWidthProperty.AddOwner(typeof(HexAddressBar));
 		
@@ -26,6 +27,28 @@ namespace BlessingSoftware.Controls.Rendering
 		{
 			get { return (int)GetValue(AddressWidthProperty); }
 			set { SetValue(AddressWidthProperty, value); }
+		}
+		
+		public static readonly DependencyProperty LineHeightProperty =
+			HexArea.LineHeightProperty.AddOwner(typeof(HexAddressBar));
+		
+		/// <summary>
+		/// 行高
+		/// </summary>
+		public double LineHeight{
+			get{ return (double)GetValue(LineHeightProperty);}
+			set{ SetValue(LineHeightProperty,value);}
+		}
+		
+		public static readonly DependencyProperty ColumnHeightProperty =
+			HexArea.ColumnHeightProperty.AddOwner(typeof(HexAddressBar));
+		
+		/// <summary>
+		/// 获取或设置标题栏高度
+		/// </summary>
+		public double ColumnHeight{
+			get{ return (double)GetValue(ColumnHeightProperty);}
+			set{ SetValue(ColumnHeightProperty,value);}
 		}
 		
 		public static readonly DependencyProperty FontFamilyProperty;
@@ -144,6 +167,22 @@ namespace BlessingSoftware.Controls.Rendering
 
 		}
 
+		DrawingVisual _child;
+		int _childoffset;
+		DrawingVisual _header;
+		public HexAddressBar()
+		{
+			this.offset = 0;
+			_child =new DrawingVisual();
+//			var dc = _child.RenderOpen();
+//			dc.DrawLine(new Pen(Brushes.Gold,1.0d),new Point(),new Point(20d,20d));
+//			dc.Close();
+			
+			this.AddVisualChild(_child);
+			_header=new DrawingVisual();
+			this.AddVisualChild(_header);
+		}
+		
 		public Orientation Orientation
 		{
 			get
@@ -171,10 +210,24 @@ namespace BlessingSoftware.Controls.Rendering
 			}
 		}
 
+		protected override int VisualChildrenCount {
+			get { return 2; }
+		}
+		
+		protected override Visual GetVisualChild(int index)
+		{
+			switch (index) {
+				case 0:
+					return _child;
+				default:
+					return _header;
+			}
+		}
+		
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			string temp =new string('0',this.AddressWidth + 1);
-			FormattedText ft =   new FormattedText(
+			FormattedText ft = new FormattedText(
 				temp,
 				CultureInfo.GetCultureInfo("en-US"),
 				base.FlowDirection,
@@ -191,41 +244,74 @@ namespace BlessingSoftware.Controls.Rendering
 			base.OnRender(drawingContext);
 			drawingContext.DrawRectangle(this.Background, null, new Rect(this.RenderSize));
 
-			Point pos = new Point();
-
-			int off = this.offset;
-
 			Typeface tf = new Typeface(this.FontFamily, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
 			CultureInfo info = CultureInfo.GetCultureInfo("en-US");
-			FormattedText temp;
-			double height = this.RenderSize.Height;
+			RenderHeader(tf,info);
+			RenderChild(tf,info);
 			
-			temp = new FormattedText(
-				"Address",
-				info,
-				FlowDirection.LeftToRight,
-				tf,
-				this.FontSize,
-				this.Foreground
-			);
-			drawingContext.DrawText(temp,new Point());
-			
-			string tmp = new string('0',this.AddressWidth);
-			while (pos.Y < height)
-			{
-				temp = new FormattedText(
-					(off++).ToString(tmp),
-					info,
-					FlowDirection.LeftToRight,
-					tf,
-					this.FontSize,
-					this.Foreground
-				);
-				pos.Y += temp.Height;
-				drawingContext.DrawText(
-					temp,
-					pos
-				);
+//			double height2=this.LineHeight;
+//			
+//			FormattedText temp;
+//			double height = this.RenderSize.Height;
+//
+//			string tmp = new string('0',this.AddressWidth);
+//			
+//			while (pos.Y < height)
+//			{
+//				temp = new FormattedText(
+//					(off++).ToString(tmp),
+//					info,
+//					FlowDirection.LeftToRight,
+//					tf,
+//					this.FontSize,
+//					this.Foreground
+//				);
+//				pos.Y += height2;
+//				drawingContext.DrawText(
+//					temp,
+//					pos
+//				);
+//			}
+		}
+
+		void RenderHeader(Typeface tf,CultureInfo info)
+		{
+			using (var dc = _header.RenderOpen()) {
+				var temp2 = new FormattedText("Address", info, FlowDirection.LeftToRight, tf, this.FontSize, this.Foreground);
+				dc.DrawRectangle(this.Background, null, new Rect(0.0d, 0.0d, this.RenderSize.Width, this.ColumnHeight));
+				dc.DrawText(temp2, new Point(0, 0.5d * (this.ColumnHeight - temp2.Height)));
+				dc.Close();
+//				_header.Offset = new Vector(0, 0.5d * (this.ColumnHeight - temp2.Height));
+			}
+		}
+		
+		void RenderChild(Typeface tf,CultureInfo info)
+		{			
+			Point pos = new Point();
+			int off = 0;
+			using (var dc = _child.RenderOpen()) {
+				double height2=this.LineHeight;
+				
+				FormattedText temp;
+				double height = SystemParameters.FullPrimaryScreenHeight;// this.RenderSize.Height;
+
+				string tmp = new string('0',this.AddressWidth);
+				
+				while (pos.Y < height)
+				{
+					temp = new FormattedText(
+						(off++).ToString(tmp),
+						info,
+						FlowDirection.LeftToRight,
+						tf,
+						this.FontSize,
+						this.Foreground
+					);
+					pos.Y += height2;
+					dc.DrawText(temp,pos);
+				}
+				dc.Close();
+				_child.Offset =new Vector(0.0d,height2 * (_childoffset - this.offset));
 			}
 		}
 

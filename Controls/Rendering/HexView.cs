@@ -61,9 +61,9 @@ namespace BlessingSoftware.Controls.Rendering
 			HexView.ForegroundProperty = TextElement.ForegroundProperty.AddOwner(typeof(HexView), new FrameworkPropertyMetadata(SystemColors.ControlTextBrush, FrameworkPropertyMetadataOptions.Inherits));
 			HexView.FontFamilyProperty = TextElement.FontFamilyProperty.AddOwner(typeof(HexView), new FrameworkPropertyMetadata(SystemFonts.MessageFontFamily, FrameworkPropertyMetadataOptions.Inherits));
 			HexView.FontSizeProperty = TextElement.FontSizeProperty.AddOwner(typeof(HexView), new FrameworkPropertyMetadata(SystemFonts.MessageFontSize, FrameworkPropertyMetadataOptions.Inherits));
-			HexView.FontStretchProperty = TextElement.FontStretchProperty.AddOwner(typeof(HexView), new FrameworkPropertyMetadata(TextElement.FontStretchProperty.DefaultMetadata.DefaultValue, FrameworkPropertyMetadataOptions.Inherits));
-			HexView.FontStyleProperty = TextElement.FontStyleProperty.AddOwner(typeof(HexView), new FrameworkPropertyMetadata(SystemFonts.MessageFontStyle, FrameworkPropertyMetadataOptions.Inherits));
-			HexView.FontWeightProperty = TextElement.FontWeightProperty.AddOwner(typeof(HexView), new FrameworkPropertyMetadata(SystemFonts.MessageFontWeight, FrameworkPropertyMetadataOptions.Inherits));
+//			HexView.FontStretchProperty = TextElement.FontStretchProperty.AddOwner(typeof(HexView), new FrameworkPropertyMetadata(TextElement.FontStretchProperty.DefaultMetadata.DefaultValue, FrameworkPropertyMetadataOptions.Inherits));
+//			HexView.FontStyleProperty = TextElement.FontStyleProperty.AddOwner(typeof(HexView), new FrameworkPropertyMetadata(SystemFonts.MessageFontStyle, FrameworkPropertyMetadataOptions.Inherits));
+//			HexView.FontWeightProperty = TextElement.FontWeightProperty.AddOwner(typeof(HexView), new FrameworkPropertyMetadata(SystemFonts.MessageFontWeight, FrameworkPropertyMetadataOptions.Inherits));
 
 			FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(typeof(HexView), new FrameworkPropertyMetadata(typeof(HexView)));
 
@@ -124,13 +124,13 @@ namespace BlessingSoftware.Controls.Rendering
 		{
 			Size sz = new Size(
 				Math.Max(availableSize.Width, this.DefaultLineWidth),
-				Math.Max(availableSize.Height, defaultLineHeight * this.LineCount)
+				Math.Max(availableSize.Height, this.LineHeight * this.LineCount)
 			);
 			SetScrollData(availableSize, sz, scrollOffset);
 			if (availableSize.Width == double.PositiveInfinity)
 				availableSize.Width = SystemParameters.PrimaryScreenWidth;
 			if (availableSize.Height == double.PositiveInfinity)
-				availableSize.Height = SystemParameters.PrimaryScreenHeight;
+				availableSize.Height = SystemParameters.PrimaryScreenHeight;			
 			return availableSize;
 		}
 
@@ -149,6 +149,7 @@ namespace BlessingSoftware.Controls.Rendering
 
 			int lineCount = this.LineCount;
 			int colCount = this.ColumnCount;
+			double defaultLineHeight = this.LineHeight;
 			for (int i = 0; i < lineCount; i++)
 			{
 				if (pos.Y < -0.1d)
@@ -174,14 +175,39 @@ namespace BlessingSoftware.Controls.Rendering
 
 
 		#region DependencyProperties
+		
+		public static readonly DependencyProperty LineHeightProperty =
+			HexArea.LineHeightProperty.AddOwner(typeof(HexView));
+		
+		public static readonly DependencyProperty ColumnWidthProperty =
+			HexArea.ColumnWidthProperty.AddOwner(typeof(HexView));
+		
+//		public static readonly DependencyProperty ColumnWidthProperty =
+//			DependencyProperty.Register("ColumnWidth", typeof(double), typeof(HexArea),
+//			                            new FrameworkPropertyMetadata(null));
+		/// <summary>
+		/// 行高
+		/// </summary>
+		public double LineHeight{
+			get{ return (double)GetValue(LineHeightProperty);}
+			set{ SetValue(LineHeightProperty,value);}
+		}
+		
+		/// <summary>
+		/// 列宽
+		/// </summary>
+		public double ColumnWidth{
+			get{ return (double)GetValue(ColumnWidthProperty);}
+			set{ SetValue(ColumnWidthProperty,value);}
+		}
 
 		public static readonly DependencyProperty FontFamilyProperty;
 
-		public static readonly DependencyProperty FontStyleProperty;
-
-		public static readonly DependencyProperty FontWeightProperty;
-
-		public static readonly DependencyProperty FontStretchProperty;
+//		public static readonly DependencyProperty FontStyleProperty;
+//
+//		public static readonly DependencyProperty FontWeightProperty;
+//
+//		public static readonly DependencyProperty FontStretchProperty;
 
 		public static readonly DependencyProperty FontSizeProperty;
 
@@ -201,39 +227,39 @@ namespace BlessingSoftware.Controls.Rendering
 				base.SetValue(HexArea.FontFamilyProperty, value);
 			}
 		}
-		public FontStyle FontStyle
-		{
-			get
-			{
-				return (FontStyle)base.GetValue(HexArea.FontStyleProperty);
-			}
-			set
-			{
-				base.SetValue(HexArea.FontStyleProperty, value);
-			}
-		}
-		public FontWeight FontWeight
-		{
-			get
-			{
-				return (FontWeight)base.GetValue(HexArea.FontWeightProperty);
-			}
-			set
-			{
-				base.SetValue(HexArea.FontWeightProperty, value);
-			}
-		}
-		public FontStretch FontStretch
-		{
-			get
-			{
-				return (FontStretch)base.GetValue(HexArea.FontStretchProperty);
-			}
-			set
-			{
-				base.SetValue(HexArea.FontStretchProperty, value);
-			}
-		}
+//		public FontStyle FontStyle
+//		{
+//			get
+//			{
+//				return (FontStyle)base.GetValue(HexArea.FontStyleProperty);
+//			}
+//			set
+//			{
+//				base.SetValue(HexArea.FontStyleProperty, value);
+//			}
+//		}
+//		public FontWeight FontWeight
+//		{
+//			get
+//			{
+//				return (FontWeight)base.GetValue(HexArea.FontWeightProperty);
+//			}
+//			set
+//			{
+//				base.SetValue(HexArea.FontWeightProperty, value);
+//			}
+//		}
+//		public FontStretch FontStretch
+//		{
+//			get
+//			{
+//				return (FontStretch)base.GetValue(HexArea.FontStretchProperty);
+//			}
+//			set
+//			{
+//				base.SetValue(HexArea.FontStretchProperty, value);
+//			}
+//		}
 		[TypeConverter(typeof(FontSizeConverter)), Localizability(LocalizationCategory.None)]
 		public double FontSize
 		{
@@ -272,7 +298,8 @@ namespace BlessingSoftware.Controls.Rendering
 
 		Typeface GetTypeface()
 		{
-			return new Typeface(this.FontFamily, this.FontStyle, this.FontWeight, this.FontStretch);
+			//return new Typeface(this.FontFamily, this.FontStyle, this.FontWeight, this.FontStretch);
+			return new Typeface(this.FontFamily, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
 		}
 
 		#region IScrollInfo implementation
@@ -410,35 +437,35 @@ namespace BlessingSoftware.Controls.Rendering
 
 		public void LineUp()
 		{
-			(this as IScrollInfo).SetVerticalOffset(scrollOffset.Y - defaultLineHeight);
+			(this as IScrollInfo).SetVerticalOffset(scrollOffset.Y - this.LineHeight);
 		}
 
 		public void LineDown()
 		{
-			(this as IScrollInfo).SetVerticalOffset(scrollOffset.Y + defaultLineHeight);
+			(this as IScrollInfo).SetVerticalOffset(scrollOffset.Y + this.LineHeight);
 		}
 
 		public void LineLeft()
 		{
-			(this as IScrollInfo).SetHorizontalOffset(scrollOffset.X - DefaultColumnWidth);
+			(this as IScrollInfo).SetHorizontalOffset(scrollOffset.X - this.ColumnWidth);
 		}
 
 		public void LineRight()
 		{
-			(this as IScrollInfo).SetHorizontalOffset(scrollOffset.X + DefaultColumnWidth);
+			(this as IScrollInfo).SetHorizontalOffset(scrollOffset.X + this.ColumnWidth);
 		}
 
 		public void PageUp()
 		{
 			(this as IScrollInfo).SetVerticalOffset(
-				scrollOffset.Y + defaultLineHeight - this.scrollViewport.Height
+				scrollOffset.Y + this.LineHeight - this.scrollViewport.Height
 			);
 		}
 
 		public void PageDown()
 		{
 			(this as IScrollInfo).SetVerticalOffset(
-				scrollOffset.Y - defaultLineHeight + this.scrollViewport.Height
+				scrollOffset.Y - this.LineHeight + this.scrollViewport.Height
 			);
 		}
 
@@ -494,9 +521,12 @@ namespace BlessingSoftware.Controls.Rendering
 				vector.X,
 				scrollExtent.Width - scrollViewport.Width
 			);
+			
+			double defaultLineHeight =this.LineHeight;
+			
 			double t = Math.Round
 				(
-					(scrollExtent.Height - scrollViewport.Height) / DefaultLineHeight,
+					(scrollExtent.Height - scrollViewport.Height) / defaultLineHeight,
 					0
 				);
 
@@ -537,6 +567,7 @@ namespace BlessingSoftware.Controls.Rendering
 			offset = ValidateVisualOffset(offset);
 			if (!scrollOffset.Y.IsClose(offset))
 			{
+				double defaultLineHeight = this.LineHeight;
 				offset = Math.Round((offset / defaultLineHeight), 0) * defaultLineHeight;
 				SetScrollOffset(new Vector(scrollOffset.X, offset));
 				InvalidateMeasure(DispatcherPriority.Normal);
@@ -554,18 +585,18 @@ namespace BlessingSoftware.Controls.Rendering
 		}
 
 
-		double defaultLineHeight;
+//		double defaultLineHeight;
 		double defaultLineWidth;
-		double defaultColumnWidth;
+//		double defaultColumnWidth;
 		
-		public double DefaultLineHeight
-		{
-			get
-			{
-				CalculateLineLayout();
-				return defaultLineHeight;
-			}
-		}
+//		public double DefaultLineHeight
+//		{
+//			get
+//			{
+//				CalculateLineLayout();
+//				return defaultLineHeight;
+//			}
+//		}
 
 		public double DefaultLineWidth
 		{
@@ -576,14 +607,14 @@ namespace BlessingSoftware.Controls.Rendering
 			}
 		}
 		
-		public double DefaultColumnWidth
-		{
-			get
-			{
-				CalculateLineLayout();
-				return defaultColumnWidth;
-			}
-		}
+//		public double DefaultColumnWidth
+//		{
+//			get
+//			{
+//				CalculateLineLayout();
+//				return defaultColumnWidth;
+//			}
+//		}
 
 		//double addressWidth;
 		//public double AddressWidth
@@ -594,8 +625,6 @@ namespace BlessingSoftware.Controls.Rendering
 		//        return addressWidth;
 		//    }
 		//}
-
-		//internal const string C_COLUMNHEADER = "00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F";
 
 		void CalculateLineLayout()
 		{
@@ -608,9 +637,9 @@ namespace BlessingSoftware.Controls.Rendering
 				this.Foreground
 			);
 			
-			defaultLineHeight = ft.Height;
+//			defaultLineHeight = ft.Height;
 			defaultLineWidth = ft.Width;
-			defaultColumnWidth = defaultLineWidth * 3.0d / ft.Text.Length;
+//			defaultColumnWidth = defaultLineWidth * 3.0d / ft.Text.Length;
 			ft = null;
 		}
 

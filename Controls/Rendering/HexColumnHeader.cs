@@ -30,13 +30,35 @@ namespace BlessingSoftware.Controls.Rendering
 			set { SetValue(ColumnCountProperty, value); }
 		}
 		
+		public static readonly DependencyProperty ColumnWidthProperty =
+			HexArea.ColumnWidthProperty.AddOwner(typeof(HexColumnHeader));
+		
+		/// <summary>
+		/// 列宽
+		/// </summary>
+		public double ColumnWidth{
+			get{ return (double)GetValue(ColumnWidthProperty);}
+			set{ SetValue(ColumnWidthProperty,value);}
+		}
+		
+		public static readonly DependencyProperty ColumnHeightProperty =
+			HexArea.ColumnHeightProperty.AddOwner(typeof(HexColumnHeader));
+		
+		/// <summary>
+		/// 获取或设置标题栏高度
+		/// </summary>
+		public double ColumnHeight{
+			get{ return (double)GetValue(ColumnHeightProperty);}
+			set{ SetValue(ColumnHeightProperty,value);}
+		}
+		
 		public static readonly DependencyProperty FontFamilyProperty;
 
-		public static readonly DependencyProperty FontStyleProperty;
-
-		public static readonly DependencyProperty FontWeightProperty;
-
-		public static readonly DependencyProperty FontStretchProperty;
+//		public static readonly DependencyProperty FontStyleProperty;
+//
+//		public static readonly DependencyProperty FontWeightProperty;
+//
+//		public static readonly DependencyProperty FontStretchProperty;
 
 		public static readonly DependencyProperty FontSizeProperty;
 
@@ -57,41 +79,41 @@ namespace BlessingSoftware.Controls.Rendering
 			}
 		}
 
-		public FontStyle FontStyle
-		{
-			get
-			{
-				return (FontStyle)base.GetValue(HexColumnHeader.FontStyleProperty);
-			}
-			set
-			{
-				base.SetValue(HexColumnHeader.FontStyleProperty, value);
-			}
-		}
-
-		public FontWeight FontWeight
-		{
-			get
-			{
-				return (FontWeight)base.GetValue(HexColumnHeader.FontWeightProperty);
-			}
-			set
-			{
-				base.SetValue(HexColumnHeader.FontWeightProperty, value);
-			}
-		}
-
-		public FontStretch FontStretch
-		{
-			get
-			{
-				return (FontStretch)base.GetValue(HexColumnHeader.FontStretchProperty);
-			}
-			set
-			{
-				base.SetValue(HexColumnHeader.FontStretchProperty, value);
-			}
-		}
+//		public FontStyle FontStyle
+//		{
+//			get
+//			{
+//				return (FontStyle)base.GetValue(HexColumnHeader.FontStyleProperty);
+//			}
+//			set
+//			{
+//				base.SetValue(HexColumnHeader.FontStyleProperty, value);
+//			}
+//		}
+//
+//		public FontWeight FontWeight
+//		{
+//			get
+//			{
+//				return (FontWeight)base.GetValue(HexColumnHeader.FontWeightProperty);
+//			}
+//			set
+//			{
+//				base.SetValue(HexColumnHeader.FontWeightProperty, value);
+//			}
+//		}
+//
+//		public FontStretch FontStretch
+//		{
+//			get
+//			{
+//				return (FontStretch)base.GetValue(HexColumnHeader.FontStretchProperty);
+//			}
+//			set
+//			{
+//				base.SetValue(HexColumnHeader.FontStretchProperty, value);
+//			}
+//		}
 
 		[TypeConverter(typeof(FontSizeConverter)), Localizability(LocalizationCategory.None)]
 		public double FontSize
@@ -137,9 +159,9 @@ namespace BlessingSoftware.Controls.Rendering
 		static HexColumnHeader()
 		{
 			HexColumnHeader.FontFamilyProperty = TextElement.FontFamilyProperty.AddOwner(typeof(HexColumnHeader));
-			HexColumnHeader.FontStyleProperty = TextElement.FontStyleProperty.AddOwner(typeof(HexColumnHeader));
-			HexColumnHeader.FontWeightProperty = TextElement.FontWeightProperty.AddOwner(typeof(HexColumnHeader));
-			HexColumnHeader.FontStretchProperty = TextElement.FontStretchProperty.AddOwner(typeof(HexColumnHeader));
+//			HexColumnHeader.FontStyleProperty = TextElement.FontStyleProperty.AddOwner(typeof(HexColumnHeader));
+//			HexColumnHeader.FontWeightProperty = TextElement.FontWeightProperty.AddOwner(typeof(HexColumnHeader));
+//			HexColumnHeader.FontStretchProperty = TextElement.FontStretchProperty.AddOwner(typeof(HexColumnHeader));
 			HexColumnHeader.FontSizeProperty = TextElement.FontSizeProperty.AddOwner(typeof(HexColumnHeader));
 			HexColumnHeader.ForegroundProperty = TextElement.ForegroundProperty.AddOwner(typeof(HexColumnHeader));
 
@@ -156,13 +178,6 @@ namespace BlessingSoftware.Controls.Rendering
 			_child = new DrawingVisual();
 			
 			_children.Add(_child);
-			
-//			var drawingContext = _child.RenderOpen();
-//			{
-//				FormattedText ft =GetFormattedHeader();
-//				drawingContext.DrawText(ft, new Point());
-//				drawingContext.Close();
-//			}
 		}
 		
 		private DrawingVisual _child;
@@ -197,20 +212,22 @@ namespace BlessingSoftware.Controls.Rendering
 		{
 //			base.MeasureOverride(availableSize);
 			FormattedText ft =GetFormattedHeader();
-			return new Size(Math.Max(ft.Width, availableSize.Width), ft.Height);
+			return new Size(Math.Max(ft.Width, availableSize.Width),this.ColumnHeight);
 		}
 		protected override Size ArrangeOverride(Size finalSize)
 		{
 			finalSize = base.ArrangeOverride(finalSize);
 			FormattedText ft =GetFormattedHeader();
 			//ft.Width *3.0d/this.ColumnCount;
-			double x= -offset * ft.Width * 3.0d / ft.Text.Length;
-			if ((_child.ContentBounds.Width+x )>=0) {
-				System.Diagnostics.Debug.WriteLine(_child.ContentBounds.Width);
-				System.Diagnostics.Debug.WriteLine(this.RenderSize.Width);
-				System.Diagnostics.Debug.WriteLine(x);
-			}
-			_child.Offset = new Vector(x,0d);
+			double x= -offset * this.ColumnWidth;
+			
+//			if ((_child.ContentBounds.Width+x )>=0) {
+//				System.Diagnostics.Debug.WriteLine(_child.ContentBounds.Width - this.RenderSize.Width);
+//
+//				System.Diagnostics.Debug.WriteLine(x);
+//			}
+			double y=0.5d*(finalSize.Height - _child.ContentBounds.Height);
+			_child.Offset = new Vector(x,y);
 			
 			return finalSize;
 		}
@@ -226,18 +243,9 @@ namespace BlessingSoftware.Controls.Rendering
 				dc.DrawText(ft, new Point());
 				dc.Close();
 			}
-			//FormattedText ft =GetFormattedHeader();
-			//double t = 0.0d;// offset * ft.Width / 47.0d;
-			//double t2 = ft.Width - this.RenderSize.Width;
-			//if (t<t2)
-			//{
-			//    t = t2;
-			//    offset = Convert.ToInt32(t / (ft.Width / 47.0d));
-			//}
-
-			//drawingContext.DrawText(ft, new Point(-t, 0.0d));
-//			_child.Offset = new Vector(offset * 10d,0d);
-//			drawingContext.DrawDrawing(_child.Drawing);
+			double x= -offset * this.ColumnWidth;
+			double y=0.5d*(this.RenderSize.Height - _child.ContentBounds.Height);
+			_child.Offset = new Vector(x,y);
 		}
 		
 		// Provide a required override for the VisualChildrenCount property.
