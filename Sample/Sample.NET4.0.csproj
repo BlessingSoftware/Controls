@@ -91,9 +91,9 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Controls\BlessingSoftware.Controls.csproj">
+    <ProjectReference Include="..\Controls\BlessingSoftware.Controls.NET4.0.csproj">
       <Project>{b3941b23-8dc2-40ba-b273-c8972e0ffbf3}</Project>
-      <Name>BlessingSoftware.Controls</Name>
+      <Name>BlessingSoftware.Controls.NET4.0</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

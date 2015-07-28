@@ -51,11 +51,23 @@ namespace BlessingSoftware.Controls.Rendering
 		{
 			get { return (int)GetValue(ColumnCountProperty); }
 			set { SetValue(ColumnCountProperty, value); }
-		}
+        }
 
-		#endregion
-		
-		static HexView()
+        static void OnColumnCountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            (d as HexView).OnColumnCountChanged((int)e.NewValue);
+        }
+
+        void OnColumnCountChanged(int newValue)
+        {
+            //_buffer.Capacity = newValue;
+        }
+
+
+
+        #endregion
+
+        static HexView()
 		{
 			HexView.BackgroundProperty = Panel.BackgroundProperty.AddOwner(typeof(HexView), new FrameworkPropertyMetadata(Panel.BackgroundProperty.DefaultMetadata.DefaultValue, FrameworkPropertyMetadataOptions.None));
 			HexView.ForegroundProperty = TextElement.ForegroundProperty.AddOwner(typeof(HexView), new FrameworkPropertyMetadata(SystemColors.ControlTextBrush, FrameworkPropertyMetadataOptions.Inherits));
@@ -168,7 +180,7 @@ namespace BlessingSoftware.Controls.Rendering
 						this.Foreground),
 					pos);
 				pos.Y += defaultLineHeight;
-				if (pos.Y > this.Height)
+				if (pos.Y > this.RenderSize.Height)
 					break;
 			}
 		}
@@ -651,21 +663,6 @@ namespace BlessingSoftware.Controls.Rendering
 			return temp.JoinHex(' ',0,ColumnCount);
 		}
 		
-		//void CalculateAddressLayout()
-		//{
-		//    FormattedText ft = new FormattedText(
-		//            "00000000",
-		//            s_hexCulture,
-		//            base.FlowDirection,
-		//            this.GetTypeface(),
-		//            this.FontSize,
-		//            this.Foreground
-		//        );
-		//    addressWidth = ft.Width + 3.0d;
-		//    ft = null;
-		//}
-
-
 		#endregion
 
 		#region InvalidateMeasure(DispatcherPriority)
