@@ -14,14 +14,6 @@
                             <Setter Property="Cursor" Value="Hand" />
                         </Style>
                     </ControlTemplate.Resources>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsAfternoon" Value="True">
-                            <Setter TargetName="PART_ToggleButton" Property="Style" Value="{x:Null}"></Setter>
-                        </Trigger>
-                        <!--<Trigger SourceName="PART_HoursTextBox" Property="IsFocused">
-Visibility="Collapsed"
-                        </Trigger>-->
-                    </ControlTemplate.Triggers>
                     <StackPanel Background="{TemplateBinding Background}"
                                 Focusable="False"
                                 Orientation="Horizontal">
@@ -75,8 +67,8 @@ Visibility="Collapsed"
                                 <StackPanel Name="PART_24TimeSystem2"
                                             Grid.Row="3"
                                             Orientation="Horizontal" />
-                                <ToggleButton  Name="PART_ToggleButton"
-                                    Grid.Row="4"
+                                <ToggleButton Name="PART_ToggleButton"
+                                              Grid.Row="4"
                                               HorizontalAlignment="Center"
                                               Visibility="{Binding Is12TimeSystem,
                                                                    Converter={StaticResource BooleanToVisibilityConverter},
@@ -86,6 +78,14 @@ Visibility="Collapsed"
                             </Grid>
                         </Popup>
                     </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsAfternoon" Value="True">
+                            <Setter TargetName="PART_ToggleButton" Property="Style" Value="{x:Null}" />
+                        </Trigger>
+                        <!--<Trigger SourceName="PART_HoursTextBox" Property="IsFocused">
+Visibility="Collapsed"
+                        </Trigger>-->
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
