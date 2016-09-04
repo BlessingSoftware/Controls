@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/BlessingSoftware.Controls;component/HexViewer.xaml" />
+        <ResourceDictionary Source="/BlessingSoftware.Controls;component/Themes/HexViewer.xaml" />
+        <ResourceDictionary Source="/BlessingSoftware.Controls;component/Themes/Dameer.xaml" />
+        <ResourceDictionary Source="/BlessingSoftware.Controls;component/Themes/TimeSpanPicker.xaml" />
     </ResourceDictionary.MergedDictionaries>
-
-
 </ResourceDictionary>

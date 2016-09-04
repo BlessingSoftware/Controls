@@ -23,5 +23,9 @@ namespace Sample
         {
             InitializeComponent();
         }
+
+        private void PART_HoursTextBox_FocusableChanged(object sender, DependencyPropertyChangedEventArgs e) {
+            pop.IsOpen = true;
+        }
     }
 }

@@ -1,0 +1,93 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:BlessingSoftware.Controls">
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    <Style TargetType="local:TimeSapnPicker">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:TimeSapnPicker">
+                    <ControlTemplate.Resources>
+                        <Style x:Key="DoubleDigitTextBox" TargetType="TextBox">
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="MaxLength" Value="2" />
+                            <Setter Property="IsReadOnly" Value="True" />
+                            <Setter Property="Cursor" Value="Hand" />
+                        </Style>
+                    </ControlTemplate.Resources>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsAfternoon" Value="True">
+                            <Setter TargetName="PART_ToggleButton" Property="Style" Value="{x:Null}"></Setter>
+                        </Trigger>
+                        <!--<Trigger SourceName="PART_HoursTextBox" Property="IsFocused">
+Visibility="Collapsed"
+                        </Trigger>-->
+                    </ControlTemplate.Triggers>
+                    <StackPanel Background="{TemplateBinding Background}"
+                                Focusable="False"
+                                Orientation="Horizontal">
+                        <TextBox Name="PART_HoursTextBox"
+                                 Style="{StaticResource DoubleDigitTextBox}"
+                                 Text="{Binding Hours,
+                                                StringFormat=00,
+                                                RelativeSource={RelativeSource TemplatedParent}}" />
+                        <TextBlock Focusable="False" Text=":" />
+                        <TextBox Name="PART_MinutesTextBox"
+                                 Style="{StaticResource DoubleDigitTextBox}"
+                                 Text="{Binding Minutes,
+                                                StringFormat=00,
+                                                RelativeSource={RelativeSource TemplatedParent}}" />
+                        <TextBlock Focusable="False" Text=":" />
+                        <TextBox Name="PART_SecondsTextBox"
+                                 Style="{StaticResource DoubleDigitTextBox}"
+                                 Text="{Binding Seconds,
+                                                StringFormat=00,
+                                                RelativeSource={RelativeSource TemplatedParent}}" />
+                        <Popup Name="PART_HoursPopup"
+                               AllowsTransparency="True"
+                               Focusable="False"
+                               IsOpen="{Binding IsFocused,
+                                                Mode=OneWay,
+                                                ElementName=PART_HoursTextBox}"
+                               Placement="Bottom"
+                               PlacementTarget="{Binding ElementName=PART_HoursTextBox}">
+                            <Grid Background="{DynamicResource {x:Static SystemColors.MenuBarBrushKey}}">
+                                <Grid.Resources>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="FrameworkElement.Margin" Value="5" />
+                                    </Style>
+                                </Grid.Resources>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
+                                <StackPanel Name="PART_12TimeSystem1"
+                                            Grid.Row="0"
+                                            Orientation="Horizontal" />
+                                <StackPanel Name="PART_12TimeSystem2"
+                                            Grid.Row="1"
+                                            Orientation="Horizontal" />
+                                <StackPanel Name="PART_24TimeSystem1"
+                                            Grid.Row="2"
+                                            Orientation="Horizontal" />
+                                <StackPanel Name="PART_24TimeSystem2"
+                                            Grid.Row="3"
+                                            Orientation="Horizontal" />
+                                <ToggleButton  Name="PART_ToggleButton"
+                                    Grid.Row="4"
+                                              HorizontalAlignment="Center"
+                                              Visibility="{Binding Is12TimeSystem,
+                                                                   Converter={StaticResource BooleanToVisibilityConverter},
+                                                                   RelativeSource={RelativeSource TemplatedParent}}">
+                                    A.M.
+                                </ToggleButton>
+                            </Grid>
+                        </Popup>
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
