@@ -17,7 +17,7 @@
                                     Orientation="Horizontal">
                             <CheckBox Name="PART_CheckBox"
                                       VerticalAlignment="Center"
-                                      IsChecked="{TemplateBinding IsChecked}"
+                                      IsChecked="{Binding IsChecked, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                       Visibility="{TemplateBinding Converter={StaticResource boolToVisibility},
                                                                    Property=ShowCheckBox}" />
                             <TextBox Name="PART_TextBox"
