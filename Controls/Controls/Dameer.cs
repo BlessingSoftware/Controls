@@ -13,45 +13,18 @@ using System.ComponentModel;
 using System.Windows.Input;
 using System.Windows.Media;
 
+
 namespace BlessingSoftware.Controls {
-    public enum DateTimePickerFormat { Long, Short, Time, DateTime, Custom }
+    //public enum DameerFormat { Long, Short, Time, DateTime, Custom }
 
-    public class DateTimeChangedEventArgs :RoutedEventArgs {
-
-        private DateTime? m_oldValue;
-        private DateTime? m_newValue;
-
-        public DateTime? NewValue {
-            get {
-                return this.m_newValue;
-            }
-        }
-
-        public DateTime? OldValue {
-            get {
-                return this.m_oldValue;
-            }
-        }
-
-        public TimeSpan? Delta {
-            get {
-                if(this.m_newValue.HasValue) {
-                    if(this.m_oldValue.HasValue) {
-                        return this.m_newValue - this.m_oldValue;
-                    }
-                }
-                return null;
-            }
-        }
-
-        public DateTimeChangedEventArgs(DateTime? oldValue, DateTime? newValue) {
-            this.m_newValue = newValue;
-            this.m_oldValue = oldValue;
-        }
+    public static class DameerFormats {
+        public static string DateTime { get; } = "MM/dd/yyyy hh:mm:ss";
+        public static string Time { get; } = "h:mm:ss tt";
+        public static string Short { get; } = "M/d/yyyy";
+        public static string Long { get; } = "dddd, MMMM dd, yyyy";
 
     }
 
-    public delegate void DateTimeChangedEventHandler(object sender, DateTimeChangedEventArgs e);
 
     [DefaultBindingProperty("Value")]
     [TemplatePart(Name = "PART_CheckBox", Type = typeof(CheckBox))]
@@ -60,29 +33,21 @@ namespace BlessingSoftware.Controls {
     [TemplatePart(Name = "PART_Popup", Type = typeof(Popup))]
     [TemplatePart(Name = "PART_Calendar", Type = typeof(Calendar))]
     public class Dameer :Control {
+
         private CheckBox m_checkBox;
         internal TextBox m_textBox;
         private TextBlock m_textBlock;
         private Popup m_popUp;
         private Calendar m_calendar;
         private BlockManager m_blockManager;
-        internal const string _defaultFormat = "MM/dd/yyyy hh:mm:ss tt";
 
         #region DependencyProperties
-
-        public static readonly DependencyProperty CustomFormatProperty;
-
-        [Category("Dameer")]
-        public string CustomFormat {
-            get { return (string)GetValue(CustomFormatProperty); }
-            set { SetValue(CustomFormatProperty, value); }
-        }
 
         public static readonly DependencyProperty FormatProperty;
 
         [Category("Dameer")]
-        public DateTimePickerFormat Format {
-            get { return (DateTimePickerFormat)GetValue(FormatProperty); }
+        public string Format {
+            get { return (string)GetValue(FormatProperty); }
             set { SetValue(FormatProperty, value); }
         }
 
@@ -115,51 +80,28 @@ namespace BlessingSoftware.Controls {
         }
 
         [Category("Dameer")]
-        private string FormatString {
-            get {
-                switch(this.Format) {
-                    case DateTimePickerFormat.Long:
-                        return "dddd, MMMM dd, yyyy";
-                    case DateTimePickerFormat.Short:
-                        return "M/d/yyyy";
-                    case DateTimePickerFormat.Time:
-                        return "h:mm:ss tt";
-                    case DateTimePickerFormat.DateTime:
-                        return "MM/dd/yyyy hh:mm:ss";
-                    case DateTimePickerFormat.Custom:
-                        if(string.IsNullOrEmpty(this.CustomFormat))
-                            return Dameer._defaultFormat;
-                        else
-                            return this.CustomFormat;
-                    default:
-                        return Dameer._defaultFormat;
-                }
-            }
-        }
-
-        [Category("Dameer")]
-        public DateTime? Value {
+        public DateTime? SelectedValue {
             get {
                 if(!this.IsChecked.HasValue) return null;
-                return (DateTime?)GetValue(ValueProperty);
+                return (DateTime?)GetValue(SelectedValueProperty);
             }
-            set { SetValue(ValueProperty, value); }
+            set { SetValue(SelectedValueProperty, value); }
         }
 
-        public static readonly DependencyProperty ValueProperty;
+        public static readonly DependencyProperty SelectedValueProperty;
         static void OnPropertyValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
 
-            if(e.Property == Dameer.ValueProperty) {
-                (d as Dameer).OnValueChanged(e.OldValue as DateTime?, e.NewValue as DateTime?);
+            if(e.Property == Dameer.SelectedValueProperty) {
+                (d as Dameer).OnSelectedValueChanged(e.OldValue as DateTime?, e.NewValue as DateTime?);
             } else if(e.Property == Dameer.FormatProperty) {
                 Dameer dameer = (Dameer)d;
-                dameer.m_blockManager = new BlockManager(dameer, dameer.FormatString);
+                dameer.m_blockManager = new BlockManager(dameer, dameer.Format);
             } else if(e.Property == Dameer.IsCheckedProperty) {
                 Dameer dameer = d as Dameer;
                 if((bool)e.NewValue) {
-                    dameer.OnValueChanged(null, dameer.Value);
+                    dameer.OnSelectedValueChanged(null, dameer.SelectedValue);
                 } else {
-                    dameer.OnValueChanged(dameer.Value, null);
+                    dameer.OnSelectedValueChanged(dameer.SelectedValue, null);
                 }
             }
         }
@@ -170,28 +112,32 @@ namespace BlessingSoftware.Controls {
 
         internal DateTime InternalValue {
             get {
-                DateTime? value = this.Value;
+                DateTime? value = this.SelectedValue;
                 if(value.HasValue) return value.Value;
                 return DateTime.MinValue;
             }
         }
         #endregion
 
-        public static readonly RoutedEvent ValueChangedEvent;
+        public static readonly RoutedEvent SelectedValueChangedEvent;
 
-        public event DateTimeChangedEventHandler ValueChanged {
+        public event DateTimeChangedEventHandler SelectedValueChanged {
             add {
-                base.AddHandler(Dameer.ValueChangedEvent, value, false);
+                base.AddHandler(Dameer.SelectedValueChangedEvent, value, false);
             }
             remove {
-                base.RemoveHandler(Dameer.ValueChangedEvent, value);
+                base.RemoveHandler(Dameer.SelectedValueChangedEvent, value);
             }
         }
 
 
-        protected void OnValueChanged(DateTime? oldValue, DateTime? newValue) {
+        protected void OnSelectedValueChanged(DateTime? oldValue, DateTime? newValue) {
+            if(this.m_textBox is Rendering.DameerTextBox) {
+                return;
+            }
+            Debug.WriteLine("SelectedValueChanged: Dameer");
             base.RaiseEvent(new DateTimeChangedEventArgs(oldValue, newValue) {
-                RoutedEvent = Dameer.ValueChangedEvent
+                RoutedEvent = Dameer.SelectedValueChangedEvent
             });
             base.InvalidateVisual();
         }
@@ -199,16 +145,15 @@ namespace BlessingSoftware.Controls {
         static Dameer() {
             FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(typeof(Dameer), new FrameworkPropertyMetadata(typeof(Dameer)));
 
-            CustomFormatProperty = DependencyProperty.Register("CustomFormat", typeof(string), typeof(Dameer), new PropertyMetadata(_defaultFormat));
-            FormatProperty = DependencyProperty.Register("Format", typeof(DateTimePickerFormat), typeof(Dameer), new PropertyMetadata(DateTimePickerFormat.DateTime, new PropertyChangedCallback(Dameer.OnPropertyValueChanged)));
+            FormatProperty = DependencyProperty.Register("Format", typeof(string), typeof(Dameer), new PropertyMetadata("MM/dd/yyyy hh:mm:ss tt", new PropertyChangedCallback(Dameer.OnPropertyValueChanged)));
 
-            ValueProperty = DependencyProperty.Register("Value", typeof(DateTime?), typeof(Dameer), new FrameworkPropertyMetadata(DateTime.MinValue, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, new PropertyChangedCallback(Dameer.OnPropertyValueChanged), new CoerceValueCallback(Dameer.CoerceValue), true, System.Windows.Data.UpdateSourceTrigger.PropertyChanged));
+            SelectedValueProperty = DependencyProperty.Register("SelectedValue", typeof(DateTime?), typeof(Dameer), new FrameworkPropertyMetadata(DateTime.Now, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, new PropertyChangedCallback(Dameer.OnPropertyValueChanged), new CoerceValueCallback(Dameer.CoerceValue), true, System.Windows.Data.UpdateSourceTrigger.PropertyChanged));
             IsCheckedProperty = DependencyProperty.Register("IsChecked", typeof(bool?), typeof(Dameer), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, new PropertyChangedCallback(Dameer.OnPropertyValueChanged)));
 
             ShowDropDownProperty = DependencyProperty.Register("ShowDropDown", typeof(bool), typeof(Dameer), new PropertyMetadata(true));
             ShowCheckBoxProperty = DependencyProperty.Register("ShowCheckBox", typeof(bool), typeof(Dameer), new PropertyMetadata(true));
 
-            ValueChangedEvent = EventManager.RegisterRoutedEvent("ValueChanged", RoutingStrategy.Tunnel, typeof(DateTimeChangedEventHandler), typeof(Dameer));
+            SelectedValueChangedEvent = EventManager.RegisterRoutedEvent("SelectedValueChanged", RoutingStrategy.Bubble, typeof(DateTimeChangedEventHandler), typeof(Dameer));
         }
 
         public Dameer() {
@@ -225,28 +170,35 @@ namespace BlessingSoftware.Controls {
             this.m_popUp = (Popup)this.Template.FindName("PART_Popup", this);
             this.m_calendar = (Calendar)this.Template.FindName("PART_Calendar", this);
 
-            if(this.m_textBox != null) {
-                this.m_textBox.GotFocus += new RoutedEventHandler(m_textBox_GotFocus);
+            if(this.m_textBox != null && !(this.m_textBox is Rendering.DameerTextBox)) {
+                Debug.WriteLine("Use BlockManager");
+                this.m_textBox.GotFocus += new RoutedEventHandler((object sender, RoutedEventArgs e) => { Debug.WriteLine("m_textBox_GotFocus"); this.m_blockManager.ReSelect(); });
                 this.m_textBox.PreviewMouseUp += new MouseButtonEventHandler(m_textBox_PreviewMouseUp);
                 this.m_textBox.PreviewKeyDown += new KeyEventHandler(m_textBox_PreviewKeyDown);
-                this.m_textBlock.MouseLeftButtonDown += new MouseButtonEventHandler(m_textBlock_MouseLeftButtonDown);
+                this.m_blockManager = new BlockManager(this, this.Format);
+            } else {
+                this.m_blockManager = null;
             }
+            this.m_textBlock.MouseLeftButtonDown += new MouseButtonEventHandler(m_textBlock_MouseLeftButtonDown);
             if(this.m_calendar != null) {
                 this.m_calendar.SelectedDatesChanged += new EventHandler<SelectionChangedEventArgs>(calendar_SelectedDatesChanged);
             }
 
-            this.m_blockManager = new BlockManager(this, this.FormatString);
         }
+
+        //private void Dameer_SelectedValueChanged(object sender, DateTimeChangedEventArgs e) {
+        //    e.Handled = true;
+        //}
 
         protected override void OnMouseWheel(MouseWheelEventArgs e) {
             Debug.WriteLine("Dameer_MouseWheel");
-            this.m_blockManager.Change(((e.Delta < 0) ? -1 : 1), true);
+            this.m_blockManager?.Change(((e.Delta < 0) ? -1 : 1), true);
             base.OnMouseWheel(e);
         }
 
         protected override void OnRender(DrawingContext drawingContext) {
             base.OnRender(drawingContext);
-            this.m_blockManager.Render();
+            this.m_blockManager?.Render();
         }
 
         public override string ToString() {
@@ -292,7 +244,7 @@ namespace BlessingSoftware.Controls {
             this.IsChecked = true;
             this.m_popUp.IsOpen = false;
             DateTime selectedDate = (DateTime)e.AddedItems[0];
-            this.Value = selectedDate.Add(new TimeSpan(this.InternalValue.Hour, this.InternalValue.Minute, this.InternalValue.Second));
+            this.SelectedValue = selectedDate.Add(new TimeSpan(this.InternalValue.Hour, this.InternalValue.Minute, this.InternalValue.Second));
             //this.Value = new DateTime(selectedDate.Year, selectedDate.Month, selectedDate.Day, this.InternalValue.Hour, this.InternalValue.Minute, this.InternalValue.Second);
             //this.m_blockManager.Render();
             this.InvalidateVisual();
@@ -369,7 +321,7 @@ namespace BlessingSoftware.Controls {
 
         internal void Change(int value, bool upDown) {
             //Debug.WriteLine("Change");
-            this.m_owner.Value = this.m_selectedBlock.Change(this.m_owner.InternalValue, value, upDown);
+            this.m_owner.SelectedValue = this.m_selectedBlock.Change(this.m_owner.InternalValue, value, upDown);
             if(upDown)
                 this.OnNeglectProposed();
             this.Render();
@@ -393,11 +345,6 @@ namespace BlessingSoftware.Controls {
 
         protected virtual void OnNeglectProposed() {
             this.NeglectProposed?.Invoke(this, EventArgs.Empty);
-            //Debug.WriteLine("OnNeglectProposed");
-            //EventHandler temp = this.NeglectProposed;
-            //if(temp != null) {
-            //    temp(this, EventArgs.Empty);
-            //}
         }
 
         internal void ReSelect() {

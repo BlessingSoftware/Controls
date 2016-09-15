@@ -141,10 +141,10 @@ namespace BlessingSoftware.Controls {
                     default:
                         break;
                 }
-                panel.Children.Add(new TextBlock() { Text = i.ToString("00"), DataContext = i, Tag = TAG_HOURS});
+                panel.Children.Add(new TextBlock() { Text = i.ToString("00"), DataContext = i, Tag = TAG_HOURS });
             }
-            
-            
+
+
         }
     }
 }

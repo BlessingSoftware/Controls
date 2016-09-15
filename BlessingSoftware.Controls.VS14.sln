@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.22823.1
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlessingSoftware.Controls", "Controls\BlessingSoftware.Controls.csproj", "{B3941B23-8DC2-40BA-B273-C8972E0FFBF3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample", "Sample\Sample.csproj", "{E999DF57-A48C-4885-9F47-18FC189598B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controls.Test", "Controls.Test\Controls.Test.csproj", "{FBE0B807-343A-4E69-BE33-17388D5509A8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{E999DF57-A48C-4885-9F47-18FC189598B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E999DF57-A48C-4885-9F47-18FC189598B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E999DF57-A48C-4885-9F47-18FC189598B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBE0B807-343A-4E69-BE33-17388D5509A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBE0B807-343A-4E69-BE33-17388D5509A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBE0B807-343A-4E69-BE33-17388D5509A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBE0B807-343A-4E69-BE33-17388D5509A8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

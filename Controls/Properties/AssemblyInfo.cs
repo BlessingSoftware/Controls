@@ -63,6 +63,7 @@ using System.Windows.Markup;
 
 [assembly: XmlnsDefinition("http://blessingsoftware.net/controls", "BlessingSoftware.Controls.Rendering")]
 [assembly: XmlnsDefinition("http://blessingsoftware.net/controls", "BlessingSoftware.Controls")]
-//[assembly: XmlnsDefinition("http://blessingsoftware.net/controls", "ICSharpCode.AvalonEdit.Rendering")]
-//[assembly: XmlnsDefinition("http://blessingsoftware.net/controls", "ICSharpCode.AvalonEdit.Highlighting")]
-//[assembly: XmlnsDefinition("http://blessingsoftware.net/controls", "ICSharpCode.AvalonEdit.Search")]
+
+#if DEBUG
+[assembly: InternalsVisibleTo("Controls.Test")]
+#endif

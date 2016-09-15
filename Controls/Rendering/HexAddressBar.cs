@@ -143,7 +143,7 @@ namespace BlessingSoftware.Controls.Rendering {
         }
 
         DrawingVisual _child;
-        int _childoffset;
+        //int _childoffset;
         DrawingVisual _header;
         public HexAddressBar() {
             this.offset = 0;
@@ -214,29 +214,6 @@ namespace BlessingSoftware.Controls.Rendering {
             RenderHeader(tf, info);
             RenderChild(tf, info);
 
-            //			double height2=this.LineHeight;
-            //			
-            //			FormattedText temp;
-            //			double height = this.RenderSize.Height;
-            //
-            //			string tmp = new string('0',this.AddressWidth);
-            //			
-            //			while (pos.Y < height)
-            //			{
-            //				temp = new FormattedText(
-            //					(off++).ToString(tmp),
-            //					info,
-            //					FlowDirection.LeftToRight,
-            //					tf,
-            //					this.FontSize,
-            //					this.Foreground
-            //				);
-            //				pos.Y += height2;
-            //				drawingContext.DrawText(
-            //					temp,
-            //					pos
-            //				);
-            //			}
         }
 
         void RenderHeader(Typeface tf, CultureInfo info) {
@@ -254,6 +231,7 @@ namespace BlessingSoftware.Controls.Rendering {
             int off = 0;
             using(var dc = _child.RenderOpen()) {
                 double height2 = this.LineHeight;
+                int _childoffset = 0;
 
                 FormattedText temp;
                 double height = SystemParameters.FullPrimaryScreenHeight;// this.RenderSize.Height;

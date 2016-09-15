@@ -5,10 +5,8 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace BlessingSoftware.Controls
-{
-   public interface IScrollable
-    {
+namespace BlessingSoftware.Controls {
+    public interface IScrollable {
         Orientation Orientation { get; }
 
         int Offset { get; set; }

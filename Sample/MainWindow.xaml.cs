@@ -11,21 +11,26 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Win32;
 
-namespace Sample
-{
+namespace Sample {
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class MainWindow : Window
-    {
-        public MainWindow()
-        {
+    public partial class MainWindow :Window {
+        public MainWindow() {
             InitializeComponent();
         }
 
-        private void PART_HoursTextBox_FocusableChanged(object sender, DependencyPropertyChangedEventArgs e) {
-            pop.IsOpen = true;
+        private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e) {
+            var dialog = new OpenFileDialog();
+            if(dialog.ShowDialog().Value) {
+                hexViewer.BaseStream = dialog.OpenFile();
+            }
+        }
+
+        private void dameer1_SelectedValueChanged(object sender, BlessingSoftware.Controls.DateTimeChangedEventArgs e) {
+            System.Diagnostics.Debug.WriteLine(e.RoutedEvent);
         }
     }
 }

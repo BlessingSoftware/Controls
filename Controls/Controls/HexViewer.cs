@@ -11,51 +11,38 @@ using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Threading;
 
-namespace BlessingSoftware.Controls
-{
+namespace BlessingSoftware.Controls {
     [TemplatePart(Name = "PART_ScrollViewer", Type = typeof(ScrollViewer))]
-    public class HexViewer : Control //ContentControl //
-    {
-        public HexViewer()
-        {
+    public class HexViewer :Control {
+        public HexViewer() {
             ViewArea = new HexArea();
-            //HexArea.Name = "HexArea";
-
-            //SetBinding(Controls.HexArea.ShowAddressProperty, new Binding("ShowColumn") { Source =this.HexArea,Mode= BindingMode.TwoWay});
         }
 
         public HexArea ViewArea { get; set; }
 
-        static HexViewer()
-        {
+        static HexViewer() {
             FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(typeof(HexViewer), new FrameworkPropertyMetadata(typeof(HexViewer)));
         }
 
         ScrollViewer scrollViewer;
-        //		TextBlock textBlock;
+
         /// <summary>
         /// Is called after the template was applied.
         /// </summary>
-        public override void OnApplyTemplate()
-        {
+        public override void OnApplyTemplate() {
             base.OnApplyTemplate();
             scrollViewer = (ScrollViewer)base.GetTemplateChild("PART_ScrollViewer");
             IScrollInfo sc = ViewArea as IScrollInfo;
-            if (sc != null)
-            {
+            if(sc != null) {
                 sc.ScrollOwner = scrollViewer;
             }
-            //			textBlock = (TextBlock)Template.FindName("PART_ColumnHeader", this);
-            //
-            //			textBlock.Text=s_colheader;
         }
 
         /// <summary>
         /// Gets the scroll viewer used by the text editor.
         /// This property can return null if the template has not been applied / does not contain a scroll viewer.
         /// </summary>
-        internal ScrollViewer ScrollViewer
-        {
+        internal ScrollViewer ScrollViewer {
             get { return scrollViewer; }
         }
 
@@ -68,8 +55,7 @@ namespace BlessingSoftware.Controls
         /// <summary>
         /// Gets/Sets the horizontal scroll bar visibility.
         /// </summary>
-        public ScrollBarVisibility HorizontalScrollBarVisibility
-        {
+        public ScrollBarVisibility HorizontalScrollBarVisibility {
             get { return (ScrollBarVisibility)GetValue(HorizontalScrollBarVisibilityProperty); }
             set { SetValue(HorizontalScrollBarVisibilityProperty, value); }
         }
@@ -82,8 +68,7 @@ namespace BlessingSoftware.Controls
         /// <summary>
         /// Gets/Sets the vertical scroll bar visibility.
         /// </summary>
-        public ScrollBarVisibility VerticalScrollBarVisibility
-        {
+        public ScrollBarVisibility VerticalScrollBarVisibility {
             get { return (ScrollBarVisibility)GetValue(VerticalScrollBarVisibilityProperty); }
             set { SetValue(VerticalScrollBarVisibilityProperty, value); }
         }
@@ -94,8 +79,7 @@ namespace BlessingSoftware.Controls
         //public static readonly DependencyProperty BaseStreamProperty =
         //    Controls.HexArea.BaseStreamProperty.AddOwner(typeof(HexViewer), new PropertyMetadata(null));
 
-        public Stream BaseStream
-        {
+        public Stream BaseStream {
             get { return (Stream)ViewArea.GetValue(HexArea.BaseStreamProperty); }
             set { ViewArea.SetValue(HexArea.BaseStreamProperty, value); }
         }
@@ -105,20 +89,17 @@ namespace BlessingSoftware.Controls
         //    new PropertyMetadata(true, OnShowAddressPropertyChanged));
 
         [Category("Layout")]
-        public bool ShowAddress
-        {
+        public bool ShowAddress {
             get { return (bool)ViewArea.GetValue(HexArea.ShowAddressProperty); }
             set { ViewArea.SetValue(HexArea.ShowAddressProperty, value); }
         }
 
-        static void OnShowAddressPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
+        static void OnShowAddressPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             (d as HexViewer).OnShowAddressPropertyChanged((bool)e.NewValue);
         }
 
-        void OnShowAddressPropertyChanged(bool newValue)
-        {
-            if (this.ViewArea != null)
+        void OnShowAddressPropertyChanged(bool newValue) {
+            if(this.ViewArea != null)
                 this.ShowAddress = newValue;
         }
 
@@ -126,8 +107,7 @@ namespace BlessingSoftware.Controls
             Controls.HexArea.ColumnBackgroundProperty.AddOwner(typeof(HexViewer), new FrameworkPropertyMetadata(SystemColors.ControlBrush));
 
         [Category("Appearance")]
-        public Brush ColumnBackground
-        {
+        public Brush ColumnBackground {
             get { return (Brush)GetValue(ColumnBackgroundProperty); }
             set { SetValue(ColumnBackgroundProperty, value); }
         }
@@ -135,23 +115,17 @@ namespace BlessingSoftware.Controls
         public static readonly DependencyProperty ColumnForegroundProperty = Controls.HexArea.ColumnForegroundProperty.AddOwner(typeof(HexViewer), new FrameworkPropertyMetadata(Brushes.Black));
 
         [Category("Appearance")]
-        public Brush ColumnForeground
-        {
+        public Brush ColumnForeground {
             get { return (Brush)GetValue(ColumnForegroundProperty); }
             set { SetValue(ColumnForegroundProperty, value); }
         }
 
-
-
         #endregion
 
-        protected override void OnDrop(DragEventArgs e)
-        {
-            if (e.Effects.HasFlag(DragDropEffects.Move))
-            {
+        protected override void OnDrop(DragEventArgs e) {
+            if(e.Effects.HasFlag(DragDropEffects.Move)) {
                 var fd = (string[])e.Data.GetData(DataFormats.FileDrop);
-                if (fd != null && File.Exists(fd[0]))
-                {
+                if(fd != null && File.Exists(fd[0])) {
                     this.BaseStream = File.OpenRead(fd[0]);
                 }
             }

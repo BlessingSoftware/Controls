@@ -51,7 +51,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\Dameer.cs" />
+    <Compile Include="Controls\Events.cs" />
     <Compile Include="Controls\TimeSpanPicker.cs" />
+    <Compile Include="Rendering\DameerTextBox.cs" />
     <Compile Include="Utils\BufferedBytes.cs" />
     <Compile Include="Controls\IScrollable.cs" />
     <Compile Include="Utils\ExtensionMethods.cs" />
